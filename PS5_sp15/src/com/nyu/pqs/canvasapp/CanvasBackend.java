@@ -21,8 +21,12 @@ public class CanvasBackend implements Model {
    }
 
   @Override
-  public void deleteListener(View canvas) {
-    // TODO Auto-generated method stub
+  public void deleteListener(View canvas) throws IllegalArgumentException{
+    if(CanvasList.contains(canvas)){
+      CanvasList.remove(canvas);
+    }else{
+      throw new IllegalArgumentException("This canvas does not exist in the list of listeners");
+    }
 
   }
 
