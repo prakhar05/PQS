@@ -1,20 +1,20 @@
 package com.nyu.pqs.canvasapp;
 
+import java.awt.Point;
 import java.util.List;
 import java.util.ArrayList;
 
 public class CanvasBackend implements Model {
-  private List<View> CanvasList = new ArrayList<View>();
-  private int oldX;
-  private int oldY;
-  private int currentX;
-  private int currentY;
+  private List<View> canvasList = new ArrayList<View>();
+  private Point startPoint;
+  private Point currentPoint;
+  private String drawMode;
   
   
   @Override
   public void registerListener(View canvas) throws IllegalArgumentException {
-    if(!CanvasList.contains(canvas)){
-      CanvasList.add(canvas);
+    if(!canvasList.contains(canvas)){
+      canvasList.add(canvas);
     }else{
       throw new IllegalArgumentException("This canvas already exists in list of listeners");
     }
@@ -22,8 +22,8 @@ public class CanvasBackend implements Model {
 
   @Override
   public void deleteListener(View canvas) throws IllegalArgumentException{
-    if(CanvasList.contains(canvas)){
-      CanvasList.remove(canvas);
+    if(canvasList.contains(canvas)){
+      canvasList.remove(canvas);
     }else{
       throw new IllegalArgumentException("This canvas does not exist in the list of listeners");
     }
@@ -32,8 +32,9 @@ public class CanvasBackend implements Model {
 
   @Override
   public void createNewDrawing() {
-    // TODO Auto-generated method stub
-
+    for(View canvasListener : canvasList){
+      canvasListener.clearCanvas();
+    }
   }
 
   @Override
@@ -43,9 +44,26 @@ public class CanvasBackend implements Model {
   }
 
   @Override
-  public void selectDrawingObject() {
-    // TODO Auto-generated method stub
-
+  public void updateDrawMode(String drawMode) {
+    this.drawMode = drawMode;
+    for(View canvasListener : canvasList){
+      canvasListener.setDrawMode(drawMode);
+    }
   }
+  
+  @Override
+  public void resetCanvas() {
+    
+    
+  }
+
+  @Override
+  public void draw(Point start, Point end) {
+    for(View canvasListener : canvasList){
+      canvasListener.drawLine();
+    }
+  }
+
+ 
 
 }

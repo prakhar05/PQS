@@ -5,5 +5,11 @@ public interface View {
   public void createNewDrawing();
   //update the view with data from model
   public void updateView();
+  //clear the canvas
+  public void clearCanvas();
+  //set drawMode to tell the panel what mode of drawing
+  public void setDrawMode(String drawMode);
+  //draw line
+  public void drawLine();
   
 }
