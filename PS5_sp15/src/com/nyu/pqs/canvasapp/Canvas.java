@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.Point;
+import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -26,14 +27,15 @@ import javax.swing.JPanel;
 public class Canvas implements View {
   Model backEnd;
   private JFrame frame;
-  private JPanel topPanel;
+  private JPanel westPanel;
   private JButton startButton;
   private JButton saveButton;
   private DrawingAreaPanel drawingArea;
   private DrawingOptionsPanel drawingOptions;
   private Point startPoint;
   private Point endPoint;
-  private String drawMode;
+  private ColorPanel colorPanel;
+//  private String drawMode;
   
   private class buttonClick implements ActionListener{
     @Override
@@ -54,12 +56,10 @@ public class Canvas implements View {
   
   private class DrawingAreaPanel extends JPanel {
     private boolean mouseReleased;
-    private Line2D tempLine;
     
     public DrawingAreaPanel(){
       mouseReleased = false;
       this.setBackground(Color.WHITE);
-      tempLine = new Line2D.Double();
       mouseHandler mouseHandlerInstance = new mouseHandler();
       this.addMouseListener(mouseHandlerInstance);
       this.addMouseMotionListener(mouseHandlerInstance);
@@ -79,7 +79,8 @@ public class Canvas implements View {
       public void mouseReleased(MouseEvent e) {
         mouseReleased = true;
         endPoint = e.getPoint();
-        backEnd.addShape(new Line2D.Double(startPoint,endPoint));
+        backEnd.addShape(startPoint,endPoint);
+        backEnd.addColor(colorPanel.getCurrentColor());
         repaint();
         System.out.println("Mouse released");
       }
@@ -87,7 +88,8 @@ public class Canvas implements View {
       @Override
       public void mouseDragged(MouseEvent e) {
         endPoint = e.getPoint();
-        tempLine.setLine(startPoint, endPoint);
+        backEnd.addTempColor(colorPanel.getCurrentColor());
+        backEnd.addTempShape(startPoint, endPoint);
         repaint();
         System.out.println("Mouse dragged");
       }
@@ -108,15 +110,19 @@ public class Canvas implements View {
     }
     
     public void paintComponent(Graphics g) {
-      Iterator<Line2D> ir = backEnd.getIterator();
+      Iterator<Shape> shapeIterator = backEnd.getShapeIterator();
+      Iterator<Color> colorIterator = backEnd.getColorIterator();
+      
       super.paintComponent(g);
       Graphics2D g2 = (Graphics2D) g;
-      if(!mouseReleased){
-        g2.draw(tempLine);
+      g2.setColor(backEnd.getTempColor());
+      if(!mouseReleased && backEnd.getTempShape()!=null){
+        g2.setColor(backEnd.getTempColor());
+        g2.draw(backEnd.getTempShape());
       }
-      while(ir.hasNext()){
-        g2.setColor(Color.BLACK);
-        g2.draw(ir.next());
+      while(shapeIterator.hasNext()){
+        g2.setColor(colorIterator.next());
+        g2.draw(shapeIterator.next());
       }
      }    
   }
@@ -125,7 +131,7 @@ public class Canvas implements View {
   public Canvas(Model backEnd){
     this.backEnd = backEnd;
     backEnd.registerListener(this);
-    drawMode = "Line";
+//    drawMode = "Line";
     startPoint = null;
     endPoint = null;
     
@@ -138,19 +144,27 @@ public class Canvas implements View {
     //initialise drawingPanel
     drawingArea = new DrawingAreaPanel();
     
-    //Initialise drawingOptions
+    //Initialise drawingOptionsPanel
     drawingOptions = new DrawingOptionsPanel();
     drawingOptions.addActionListenerToButtons(new buttonClick());
     
+    //Initialise colorPanel
+    colorPanel = new ColorPanel();
+    
     //start or reset canvas
-    topPanel = new JPanel(new GridLayout(2,1));
-    topPanel.add(startButton);
-    topPanel.add(saveButton);
+    westPanel = new JPanel(new GridLayout(2,1));
+    westPanel.add(startButton);
+    westPanel.add(saveButton);
+    
+    //setup east panel
+    JPanel eastPanel = new JPanel(new GridLayout(2,1));
+    eastPanel.add(drawingOptions);
+    eastPanel.add(colorPanel);
     
     //start frame
-    frame.add(topPanel, BorderLayout.WEST);
+    frame.add(westPanel, BorderLayout.WEST);
     frame.add(drawingArea, BorderLayout.CENTER);
-    frame.add(drawingOptions, BorderLayout.EAST);
+    frame.add(eastPanel, BorderLayout.EAST);
     frame.pack();
     frame.setSize(700,700);
     frame.setVisible(true);
@@ -178,7 +192,7 @@ public class Canvas implements View {
   
   @Override
   public void setDrawMode(String drawMode){
-    this.drawMode = drawMode;
+//    this.drawMode = drawMode;
   }
   
   private void initialiseFrame(){

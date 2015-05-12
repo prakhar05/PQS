@@ -1,6 +1,8 @@
 package com.nyu.pqs.canvasapp;
 
+import java.awt.Color;
 import java.awt.Point;
+import java.awt.Shape;
 import java.awt.geom.Line2D;
 import java.util.Iterator;
 
@@ -12,7 +14,13 @@ public interface Model {
   public void updateCanvas();
   //to set the drawMode and tell all the listeners what the drawing mode is
   public void updateDrawMode(String drawMode);
-  public void addShape(Line2D lineObj);
-  public Iterator<Line2D> getIterator();
+  public void addShape(Point startPoint, Point endPoint);
+  public void addColor(Color currentColor);
+  public void addTempShape(Point startPoint, Point endPoint);
+  public void addTempColor(Color tempColor);
+  public Iterator<Shape> getShapeIterator();
+  public Iterator<Color> getColorIterator();
+  public Shape getTempShape();
+  public Color getTempColor();
   
 }
