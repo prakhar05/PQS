@@ -1,13 +1,14 @@
 package com.nyu.pqs.canvasapp;
 
 import java.awt.Point;
+import java.awt.geom.Line2D;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
 
 public class CanvasBackend implements Model {
   private List<View> canvasList = new ArrayList<View>();
-  private Point startPoint;
-  private Point currentPoint;
+  private List<Line2D> lineList = new ArrayList<Line2D>();
   
   
   @Override
@@ -57,6 +58,15 @@ public class CanvasBackend implements Model {
     }
   }
 
- 
+  @Override
+  public void addShape(Line2D lineObj){
+    lineList.add(lineObj);
+  }
+  
+  @Override
+  public Iterator<Line2D> getIterator(){
+    Iterator<Line2D> ir = lineList.iterator();
+    return ir;
+  }
 
 }
