@@ -50,6 +50,19 @@ public class Canvas implements View {
       case "Line":
         backEnd.updateDrawMode("Line");
         break;
+      case "Rect":
+        backEnd.updateDrawMode("Rect");
+        break;
+      case "Ellipse":
+        backEnd.updateDrawMode("Ellipse");
+        break;
+      case "Pencil":
+        backEnd.updateDrawMode("Pencil");
+        break;
+      case "Eraser":
+        backEnd.updateDrawMode("Eraser");
+        colorPanel.setCurrentColor(Color.WHITE);
+        break;
       }
     }
   }
@@ -71,7 +84,7 @@ public class Canvas implements View {
       public void mousePressed(MouseEvent e) {
         mouseReleased = false;
         startPoint = e.getPoint();
-        repaint();
+        backEnd.updateCanvas();
         System.out.println("Mouse pressed");
       }
 
@@ -81,7 +94,7 @@ public class Canvas implements View {
         endPoint = e.getPoint();
         backEnd.addShape(startPoint,endPoint);
         backEnd.addColor(colorPanel.getCurrentColor());
-        repaint();
+        backEnd.updateCanvas();
         System.out.println("Mouse released");
       }
 
@@ -90,7 +103,7 @@ public class Canvas implements View {
         endPoint = e.getPoint();
         backEnd.addTempColor(colorPanel.getCurrentColor());
         backEnd.addTempShape(startPoint, endPoint);
-        repaint();
+        backEnd.updateCanvas();
         System.out.println("Mouse dragged");
       }
       
@@ -131,7 +144,6 @@ public class Canvas implements View {
   public Canvas(Model backEnd){
     this.backEnd = backEnd;
     backEnd.registerListener(this);
-//    drawMode = "Line";
     startPoint = null;
     endPoint = null;
     
@@ -180,7 +192,7 @@ public class Canvas implements View {
 
   @Override
   public void updateView() {
-    
+    drawingArea.repaint();
 
   }
   

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class DrawingOptionsPanel extends JPanel {
@@ -14,7 +15,7 @@ public class DrawingOptionsPanel extends JPanel {
   private JButton drawRect;
   private JButton drawCircle;
   private JButton drawPencil;
-  private JButton drawCurvedLine;
+  private JButton drawEraser;
   private JButton drawX;
   private JButton drawY;
   private JButton drawZ;
@@ -25,7 +26,7 @@ public class DrawingOptionsPanel extends JPanel {
     drawRect = new JButton();
     drawCircle = new JButton();
     drawPencil = new JButton();
-    drawCurvedLine = new JButton();
+    drawEraser = new JButton();
     drawX = new JButton();
     drawY = new JButton();
     drawZ = new JButton();
@@ -33,10 +34,20 @@ public class DrawingOptionsPanel extends JPanel {
     this.add(drawRect);
     this.add(drawCircle);
     this.add(drawPencil);
-    this.add(drawCurvedLine);
+    this.add(drawEraser);
     this.add(drawX);
     this.add(drawY);
     this.add(drawZ);
+    drawLine.setActionCommand("Line");
+    drawLine.add(new JLabel("Line"));
+    drawRect.setActionCommand("Rect");
+    drawRect.add(new JLabel("Rect"));
+    drawCircle.setActionCommand("Ellipse");
+    drawCircle.add(new JLabel("Ellipse"));
+    drawPencil.setActionCommand("Pencil");
+    drawPencil.add(new JLabel("Pencil"));
+    drawEraser.setActionCommand("Eraser");
+    drawEraser.add(new JLabel("Eraser"));
   }
   
   public void addActionListenerToButtons(ActionListener myActionListener){
@@ -44,7 +55,7 @@ public class DrawingOptionsPanel extends JPanel {
     drawRect.addActionListener(myActionListener);
     drawCircle.addActionListener(myActionListener);
     drawPencil.addActionListener(myActionListener);
-    drawCurvedLine.addActionListener(myActionListener);
+    drawEraser.addActionListener(myActionListener);
     drawX.addActionListener(myActionListener);
     drawY.addActionListener(myActionListener);
     drawZ.addActionListener(myActionListener);

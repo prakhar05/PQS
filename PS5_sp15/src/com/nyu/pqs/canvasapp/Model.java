@@ -12,7 +12,6 @@ public interface Model {
   public void createNewDrawing();
   public void draw(Point start,Point end);
   public void updateCanvas();
-  //to set the drawMode and tell all the listeners what the drawing mode is
   public void updateDrawMode(String drawMode);
   public void addShape(Point startPoint, Point endPoint);
   public void addColor(Color currentColor);

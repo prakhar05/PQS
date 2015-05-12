@@ -23,7 +23,7 @@ public class CanvasBackend implements Model {
   
   
   public CanvasBackend(){
-    drawMode = "Pencil";
+    drawMode = "Line";
     tempColor = Color.BLACK;
     lastPencilPoint = null;
     lastPencilColor = null;
@@ -56,15 +56,13 @@ public class CanvasBackend implements Model {
 
   @Override
   public void updateCanvas() {
-    // TODO Auto-generated method stub
-
+    for(View canvasListener : canvasList){
+      canvasListener.updateView();
+    }
   }
 
   @Override
   public void updateDrawMode(String drawMode) {
-//    for(View canvasListener : canvasList){
-//      canvasListener.setDrawMode(drawMode);
-//    }
     this.drawMode = drawMode;
   }
 
@@ -86,10 +84,9 @@ public class CanvasBackend implements Model {
     }else if(drawMode.equals("Ellipse")){
       shapeList.add(new Ellipse2D.Double(startPoint.getX(), startPoint.getY(), 
           endPoint.getX()-startPoint.getX(), endPoint.getY()-startPoint.getY()));
-    }else if(drawMode.equals("Pencil")){
+    }else if(drawMode.equals("Pencil") || drawMode.equals("Eraser")){
       lastPencilPoint = null;
       lastPencilColor = null;
-      
     }
   }
   
@@ -115,7 +112,7 @@ public class CanvasBackend implements Model {
     }else if(drawMode.equals("Ellipse")){
       tempShape = new Ellipse2D.Double(startPoint.getX(), startPoint.getY(), 
           endPoint.getX()-startPoint.getX(), endPoint.getY()-startPoint.getY());
-    }else if(drawMode.equals("Pencil")){
+    }else if(drawMode.equals("Pencil") || drawMode.equals("Eraser")){
       if(lastPencilPoint==null){
         tempShape = new Line2D.Double(startPoint, startPoint);
       }else{

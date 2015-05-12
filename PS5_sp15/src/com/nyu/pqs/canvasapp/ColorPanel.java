@@ -110,4 +110,8 @@ public class ColorPanel extends JPanel {
   public Color getCurrentColor(){
     return this.currentColor;
   }
+  
+  public void setCurrentColor(Color currentColor){
+    this.currentColor = currentColor;
+  }
 }
