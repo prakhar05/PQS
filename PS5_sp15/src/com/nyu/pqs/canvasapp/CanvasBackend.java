@@ -8,7 +8,6 @@ public class CanvasBackend implements Model {
   private List<View> canvasList = new ArrayList<View>();
   private Point startPoint;
   private Point currentPoint;
-  private String drawMode;
   
   
   @Override
@@ -45,17 +44,11 @@ public class CanvasBackend implements Model {
 
   @Override
   public void updateDrawMode(String drawMode) {
-    this.drawMode = drawMode;
     for(View canvasListener : canvasList){
       canvasListener.setDrawMode(drawMode);
     }
   }
-  
-  @Override
-  public void resetCanvas() {
-    
-    
-  }
+
 
   @Override
   public void draw(Point start, Point end) {

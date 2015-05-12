@@ -2,24 +2,31 @@ package com.nyu.pqs.canvasapp;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.geom.Line2D;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JPanel;
 
 public class DrawingAreaPanel extends JPanel {
   private Point startPoint;
-  private Point currentPoint;
   private Point endPoint;
   private String drawMode;
+  private List<Line2D> lineList = new ArrayList<Line2D>();
+  private Line2D tempLine;
+  private boolean mouseReleased;
   
   public DrawingAreaPanel(){
+    mouseReleased = false;
     this.setBackground(Color.WHITE);
-    drawMode = "";
+    tempLine = new Line2D.Double();
+    drawMode = "Line";
     startPoint = null;
-    currentPoint = null;
     endPoint = null;
     mouseHandler mouseHandlerInstance = new mouseHandler();
     this.addMouseListener(mouseHandlerInstance);
@@ -30,25 +37,27 @@ public class DrawingAreaPanel extends JPanel {
 
     @Override
     public void mousePressed(MouseEvent e) {
+      mouseReleased = false;
       startPoint = e.getPoint();
-      System.out.println("Mouse pressed");
       repaint();
+      System.out.println("Mouse pressed");
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
+      mouseReleased = true;
       endPoint = e.getPoint();
-      System.out.println("Mouse released");
+      lineList.add(new Line2D.Double(startPoint,endPoint));
       repaint();
+      System.out.println("Mouse released");
     }
 
     @Override
     public void mouseDragged(MouseEvent e) {
-      currentPoint = e.getPoint();
-      startPoint = currentPoint;
-      System.out.println("Mouse dragged");
+      endPoint = e.getPoint();
+      tempLine.setLine(startPoint, endPoint);
       repaint();
-      
+      System.out.println("Mouse dragged");
     }
     
     @Override
@@ -67,17 +76,20 @@ public class DrawingAreaPanel extends JPanel {
   }
   
   public void setDrawMode(String drawMode){
-    this.drawMode = drawMode;
-  }
+      this.drawMode = drawMode;
+    }
   
   public void paintComponent(Graphics g) {
-    System.out.println("in Paintcomponent");
-    System.out.println("Draw mode is:" + drawMode);
     super.paintComponent(g);
-    if (drawMode.equals("Line") && startPoint!=null && endPoint!=null) {
-        g.setColor(Color.BLACK);
-        g.drawLine(startPoint.x, startPoint.y, endPoint.x, endPoint.y);
+    Graphics2D g2 = (Graphics2D) g;
+    if(!mouseReleased){
+      g2.draw(tempLine);
     }
+    for(Line2D line : lineList){
+      g2.setColor(Color.BLACK);
+      g2.draw(line);
+    }
+   }    
 }
-}
+
 

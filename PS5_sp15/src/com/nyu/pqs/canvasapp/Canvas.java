@@ -44,8 +44,7 @@ public class Canvas implements View {
   
   public Canvas(Model backEnd){
     this.backEnd = backEnd;
-    //by default draw mode is a line
-    backEnd.updateDrawMode("Line");
+    backEnd.registerListener(this);
     
     //initialise the frame
     initialiseFrame();
@@ -84,20 +83,19 @@ public class Canvas implements View {
 
   @Override
   public void updateView() {
-    // TODO Auto-generated method stub
+    
 
   }
   
   @Override
   public void clearCanvas() {
-  
+    drawingArea = null;
+    drawingArea = new DrawingAreaPanel();
   }
   
   @Override
-  public void setDrawMode(String drawMode) {
-    System.out.println("IM in setDrawMODe CANVAS");
+  public void setDrawMode(String drawMode){
     drawingArea.setDrawMode(drawMode);
-    
   }
   
   private void initialiseFrame(){
