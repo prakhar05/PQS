@@ -6,20 +6,14 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.Point;
-import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.geom.Line2D;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 
@@ -27,15 +21,13 @@ import javax.swing.JPanel;
 public class Canvas implements View {
   Model backEnd;
   private JFrame frame;
-  private JPanel westPanel;
   private JButton startButton;
-  private JButton saveButton;
   private DrawingAreaPanel drawingArea;
   private DrawingOptionsPanel drawingOptions;
+  private ColorPanel colorPanel;
   private Point startPoint;
   private Point endPoint;
-  private ColorPanel colorPanel;
-//  private String drawMode;
+  
   
   private class buttonClick implements ActionListener{
     @Override
@@ -45,8 +37,6 @@ public class Canvas implements View {
       case "Start/Reset":
         backEnd.createNewDrawing();
         break;
-      case "Save":
-        saveImage();
       case "Line":
         backEnd.updateDrawMode("Line");
         break;
@@ -63,11 +53,24 @@ public class Canvas implements View {
         backEnd.updateDrawMode("Eraser");
         colorPanel.setCurrentColor(Color.WHITE);
         break;
+      case "Brush":
+        backEnd.updateDrawMode("Brush");
+        break;
+      case "IncreaseStroke":
+        backEnd.increaseStroke();
+        break;
+      case "DecreaseStroke":
+        backEnd.decreaseStroke();
+        break;
       }
     }
   }
   
-  private class DrawingAreaPanel extends JPanel {
+  private class DrawingAreaPanel extends JPanel{
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
     private boolean mouseReleased;
     
     public DrawingAreaPanel(){
@@ -92,8 +95,7 @@ public class Canvas implements View {
       public void mouseReleased(MouseEvent e) {
         mouseReleased = true;
         endPoint = e.getPoint();
-        backEnd.addShape(startPoint,endPoint);
-        backEnd.addColor(colorPanel.getCurrentColor());
+        backEnd.addDrawingObject(startPoint,endPoint);
         backEnd.updateCanvas();
         System.out.println("Mouse released");
       }
@@ -101,8 +103,7 @@ public class Canvas implements View {
       @Override
       public void mouseDragged(MouseEvent e) {
         endPoint = e.getPoint();
-        backEnd.addTempColor(colorPanel.getCurrentColor());
-        backEnd.addTempShape(startPoint, endPoint);
+        backEnd.addTempDrawingObject(startPoint, endPoint);
         backEnd.updateCanvas();
         System.out.println("Mouse dragged");
       }
@@ -123,19 +124,20 @@ public class Canvas implements View {
     }
     
     public void paintComponent(Graphics g) {
-      Iterator<Shape> shapeIterator = backEnd.getShapeIterator();
-      Iterator<Color> colorIterator = backEnd.getColorIterator();
+      Iterator<DrawingObject> drawingObjectIterator = backEnd.getDrawingObjectIterator();
       
       super.paintComponent(g);
       Graphics2D g2 = (Graphics2D) g;
-      g2.setColor(backEnd.getTempColor());
-      if(!mouseReleased && backEnd.getTempShape()!=null){
-        g2.setColor(backEnd.getTempColor());
-        g2.draw(backEnd.getTempShape());
+      if(!mouseReleased && backEnd.getTempDrawingObject()!=null){
+        g2.setColor(backEnd.getTempDrawingObject().getColor());
+        g2.setStroke(backEnd.getTempDrawingObject().getStroke());
+        g2.draw(backEnd.getTempDrawingObject().getShape());
       }
-      while(shapeIterator.hasNext()){
-        g2.setColor(colorIterator.next());
-        g2.draw(shapeIterator.next());
+      while(drawingObjectIterator.hasNext()){
+        DrawingObject temp = drawingObjectIterator.next();
+        g2.setStroke(temp.getStroke());
+        g2.setColor(temp.getColor());
+        g2.draw(temp.getShape());
       }
      }    
   }
@@ -147,88 +149,56 @@ public class Canvas implements View {
     startPoint = null;
     endPoint = null;
     
-    //initialise the frame
-    initialiseFrame();
+    //initialise frame
+    frame = new JFrame();
+    frame.setLayout(new BorderLayout());
+    frame.setTitle("Canvas Application");
     
-    //Initialise buttons
-    initialiseButtons();
+    //initialise buttons
+    startButton = new JButton("Reset Canvas");
+    startButton.addActionListener(new buttonClick());
+    startButton.setActionCommand("Start/Reset");
     
     //initialise drawingPanel
     drawingArea = new DrawingAreaPanel();
     
-    //Initialise drawingOptionsPanel
+    //initialise drawingOptionsPanel
     drawingOptions = new DrawingOptionsPanel();
     drawingOptions.addActionListenerToButtons(new buttonClick());
     
-    //Initialise colorPanel
+    //initialise colorPanel
     colorPanel = new ColorPanel();
     
-    //start or reset canvas
-    westPanel = new JPanel(new GridLayout(2,1));
-    westPanel.add(startButton);
-    westPanel.add(saveButton);
-    
     //setup east panel
-    JPanel eastPanel = new JPanel(new GridLayout(2,1));
-    eastPanel.add(drawingOptions);
-    eastPanel.add(colorPanel);
+    JPanel westPanel = new JPanel(new GridLayout(2,1));
+    westPanel.add(drawingOptions);
+    westPanel.add(colorPanel);
     
     //start frame
-    frame.add(westPanel, BorderLayout.WEST);
+    frame.add(startButton, BorderLayout.NORTH);
     frame.add(drawingArea, BorderLayout.CENTER);
-    frame.add(eastPanel, BorderLayout.EAST);
+    frame.add(westPanel, BorderLayout.WEST);
     frame.pack();
-    frame.setSize(700,700);
+    frame.setSize(900,700);
     frame.setVisible(true);
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    
   }
   
   @Override
   public void createNewDrawing() {
     backEnd.registerListener(this);
-
   }
 
   @Override
   public void updateView() {
     drawingArea.repaint();
-
   }
-  
+   
   @Override
-  public void clearCanvas() {
-    drawingArea = null;
-    drawingArea = new DrawingAreaPanel();
-  }
-  
-  @Override
-  public void setDrawMode(String drawMode){
-//    this.drawMode = drawMode;
-  }
-  
-  private void initialiseFrame(){
-    frame = new JFrame();
-    frame.setLayout(new BorderLayout());
-    frame.setTitle("Canvas Application");
-  }
-  
-  private void initialiseButtons(){
-    startButton = new JButton("New Drawing/Reset Canvas");
-    startButton.addActionListener(new buttonClick());
-    saveButton = new JButton("Save Drawing");
-    saveButton.addActionListener(new buttonClick());
+  public Color getColor() {
+    return colorPanel.getCurrentColor();
   }
   
   
-
-  private void saveImage(){
-    //save the image
-  }
-
-  @Override
-  public void drawLine() {
-    
-  }
 
 }

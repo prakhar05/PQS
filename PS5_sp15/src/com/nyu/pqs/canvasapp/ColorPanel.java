@@ -57,6 +57,8 @@ public class ColorPanel extends JPanel {
   public ColorPanel(){
     this.currentColor = Color.BLACK;
     this.setLayout(new GridLayout(4,2));
+    this.setBackground(Color.GREEN);
+    this.setOpaque(true);
     red = new JButton();
     blue = new JButton();
     green = new JButton();
