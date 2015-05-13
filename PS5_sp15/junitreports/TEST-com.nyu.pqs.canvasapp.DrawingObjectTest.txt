@@ -1,0 +1,8 @@
+Testsuite: com.nyu.pqs.canvasapp.DrawingObjectTest
+Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.017 sec
+
+Testcase: testHashCode took 0.001 sec
+Testcase: testDrawingObjectConstructorAndGetters took 0 sec
+Testcase: testDrawingObjectSettersAndParameterizedConstr took 0 sec
+Testcase: testSetColor took 0 sec
+Testcase: testSetStroke took 0 sec

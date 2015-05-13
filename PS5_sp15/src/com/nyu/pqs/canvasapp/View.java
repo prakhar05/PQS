@@ -1,12 +1,21 @@
 package com.nyu.pqs.canvasapp;
 
-import java.awt.Color;
+/**
+ * Interface for the View. The View must handle all the interaction with the user, and communicate
+ * mouse coordinates and drawing options back to the model so that it can be boradcasted to all 
+ * subscribed View Instances.
+ * @author pv594
+ *
+ */
 
 public interface View {
-  //act as a new drawing or a reset drawing
+  /**
+   * Method to register the listener with its model when object is instantiated
+   */
   public void createNewDrawing();
-  //update the view with data from model
+  /**
+   * Update the view with drawing object data from the model when asked to by the 
+   * model
+   */
   public void updateView();
-  //getColor from the color panel
-  public Color getColor();
 }

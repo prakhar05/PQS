@@ -1,0 +1,63 @@
+<project name="CanvasApp" basedir="." default="compile">
+
+    <property name="src.dir"     value="src"/>
+    <property name="testsrc.dir" value="testsrc"/>
+    <property name="build.dir"   value="build"/>
+    <property name="classes.dir" value="${build.dir}/classes"/>
+    <property name="jar.dir"     value="${build.dir}/jar"/>
+    <property name="main-class"  value="com.nyu.pqs.canvasapp.CanvasApp"/>
+    <property name="testreport.dir"  value="junitreports"/>
+
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+        <delete dir="${testreport.dir}"/>
+    </target>
+
+    <target name="compile" depends="clean">
+        <mkdir dir="build/classes"/>
+        <javac includeantruntime="false" srcdir="${src.dir}" destdir="${classes.dir}"/>
+    </target>
+
+    <copy todir="build/classes/img">
+        <fileset dir="src/img"/>
+    </copy>
+
+    <target name="jar" depends="compile">
+        <mkdir dir="${jar.dir}"/>
+        <jar destfile="${jar.dir}/${ant.project.name}.jar" basedir="${classes.dir}">
+            <manifest>
+                <attribute name="Main-Class" value="${main-class}"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="run" depends="jar">
+        <java jar="build/jar/CanvasApp.jar" fork="true"/>
+    </target>
+    
+    <target name="compiletest" depends="jar">
+        <mkdir dir="build/testclasses"/>
+        <javac includeantruntime="true" srcdir="${testsrc.dir}" destdir="${classes.dir}"/>
+    </target>
+
+    <target name="junit" depends="compiletest">
+      <mkdir dir="${testreport.dir}"/>
+      <junit printsummary="yes" haltonfailure="no">
+        <classpath>
+          <pathelement path="${classes.dir}"/>
+          <pathelement location="testsrc/com/nyu/pqs/canvasapp"/>
+          <pathelement location="junit.jar"/>
+          
+        </classpath>
+
+        <batchtest fork="no" todir="${testreport.dir}">
+      			<fileset dir="${classes.dir}" includes="**/*Test*.class" />
+      	</batchtest>
+
+        <formatter type="plain"/>
+        <formatter type="xml"/>
+
+      </junit>
+    </target>
+
+</project>

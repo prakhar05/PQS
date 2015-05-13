@@ -5,11 +5,17 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+/**
+ * A panel which contains all the color buttons and panel settings
+ * @author pv594
+ *
+ */
 public class ColorPanel extends JPanel {
-  private Color currentColor;
+  private static final long serialVersionUID = 1L;
   private JButton red;
   private JButton blue;
   private JButton green;
@@ -19,46 +25,36 @@ public class ColorPanel extends JPanel {
   private JButton black;
   private JButton white;
   
-  private class colorButtonClick implements ActionListener{
-    @Override
-    public void actionPerformed(ActionEvent e) {
-      String color = e.getActionCommand();
-      switch(color){
-      case "Red":
-        currentColor = Color.RED;
-        break;
-      case "Blue":
-        currentColor = Color.BLUE;
-        break;
-      case "Green":
-        currentColor = Color.GREEN;
-        break;
-      case "Yellow":
-        currentColor = Color.YELLOW;
-        break;
-      case "Black":
-        currentColor = Color.BLACK;
-        break;
-      case "Magenta":
-        currentColor = Color.MAGENTA;
-        break;
-      case "Cyan":
-        currentColor = Color.CYAN;
-        break;
-      case "White":
-        currentColor = Color.WHITE;
-        break;
-      default:
-        currentColor = Color.BLACK;
-      }
-    }
+  public ColorPanel(){
+    this.setLayout(new GridLayout(4,2));
+    this.setBackground(Color.RED);
+    this.setOpaque(true);
+    initButtons();
+    setButtonIcons();
+    setButtonCommands();
+    addButtonsToPanel();
+    
   }
   
-  public ColorPanel(){
-    this.currentColor = Color.BLACK;
-    this.setLayout(new GridLayout(4,2));
-    this.setBackground(Color.GREEN);
-    this.setOpaque(true);
+  /**
+   * Method to add ActionListener to all the buttons
+   * @param myActionListener
+   */
+  public void addActionListenerToButtons(ActionListener myActionListener){
+    red.addActionListener(myActionListener);
+    blue.addActionListener(myActionListener);
+    green.addActionListener(myActionListener);
+    magenta.addActionListener(myActionListener);
+    yellow.addActionListener(myActionListener);
+    cyan.addActionListener(myActionListener);
+    black.addActionListener(myActionListener);
+    white.addActionListener(myActionListener);
+  }
+  
+  /**
+   * Method to initialise the buttons
+   */
+  private void initButtons(){
     red = new JButton();
     blue = new JButton();
     green = new JButton();
@@ -67,22 +63,26 @@ public class ColorPanel extends JPanel {
     cyan = new JButton();
     black = new JButton();
     white = new JButton();
-    red.setBackground(Color.RED);
-    blue.setBackground(Color.BLUE);
-    green.setBackground(Color.GREEN);
-    yellow.setBackground(Color.YELLOW);
-    magenta.setBackground(Color.MAGENTA);
-    cyan.setBackground(Color.CYAN);
-    black.setBackground(Color.BLACK);
-    white.setBackground(Color.WHITE);
-    red.setOpaque(true);
-    blue.setOpaque(true);
-    green.setOpaque(true);
-    yellow.setOpaque(true);
-    magenta.setOpaque(true);
-    cyan.setOpaque(true);
-    black.setOpaque(true);
-    white.setOpaque(true);
+  }
+  
+  /**
+   * Method to set the buttons icons
+   */
+  private void setButtonIcons(){
+    red.setIcon(new ImageIcon(getClass().getResource("/img/red.png")));
+    blue.setIcon(new ImageIcon(getClass().getResource("/img/blue.png")));
+    green.setIcon(new ImageIcon(getClass().getResource("/img/green.png")));
+    yellow.setIcon(new ImageIcon(getClass().getResource("/img/yellow.png")));
+    magenta.setIcon(new ImageIcon(getClass().getResource("/img/magenta.png")));
+    cyan.setIcon(new ImageIcon(getClass().getResource("/img/cyan.png")));
+    black.setIcon(new ImageIcon(getClass().getResource("/img/black.png")));
+    white.setIcon(new ImageIcon(getClass().getResource("/img/white.png")));
+  }
+  
+  /**
+   * Method to set the button action commands
+   */
+  private void setButtonCommands(){
     red.setActionCommand("Red");
     blue.setActionCommand("Blue");
     green.setActionCommand("Green");
@@ -91,14 +91,12 @@ public class ColorPanel extends JPanel {
     cyan.setActionCommand("Cyan");
     white.setActionCommand("White");
     black.setActionCommand("Black");
-    red.addActionListener(new colorButtonClick());
-    blue.addActionListener(new colorButtonClick());
-    green.addActionListener(new colorButtonClick());
-    yellow.addActionListener(new colorButtonClick());
-    magenta.addActionListener(new colorButtonClick());
-    cyan.addActionListener(new colorButtonClick());
-    black.addActionListener(new colorButtonClick());
-    white.addActionListener(new colorButtonClick());
+  }
+  
+  /**
+   * Method to add buttons to the color panel
+   */
+  private void addButtonsToPanel(){
     this.add(red);
     this.add(blue);
     this.add(green);
@@ -107,13 +105,5 @@ public class ColorPanel extends JPanel {
     this.add(cyan);
     this.add(black);
     this.add(white);
-  }
-  
-  public Color getCurrentColor(){
-    return this.currentColor;
-  }
-  
-  public void setCurrentColor(Color currentColor){
-    this.currentColor = currentColor;
   }
 }

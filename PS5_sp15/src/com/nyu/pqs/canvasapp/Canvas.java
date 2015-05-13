@@ -16,7 +16,13 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-
+/**
+ * A class that implements the View interface. Its responsible for creating and integrating all
+ * the UI elements like Buttons, Panels and the Frame, while informing the Model about changes taking
+ * place within the UI
+ * @author pv594
+ *
+ */
 
 public class Canvas implements View {
   Model backEnd;
@@ -28,8 +34,17 @@ public class Canvas implements View {
   private Point startPoint;
   private Point endPoint;
   
-  
+  /**
+   * Private class that implements the ActionListener interface, for the buttons in the View.
+   * It gets the action command from the button clicks and performs operations accordingly
+   * @author KillEmAll
+   *
+   */
   private class buttonClick implements ActionListener{
+    /**
+     * Override actionPerformed method which gets the action command from the button clicks 
+     * and performs operations accordingly.
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
       String action = e.getActionCommand();
@@ -51,7 +66,7 @@ public class Canvas implements View {
         break;
       case "Eraser":
         backEnd.updateDrawMode("Eraser");
-        colorPanel.setCurrentColor(Color.WHITE);
+        backEnd.updateCurrentColor(Color.WHITE);
         break;
       case "Brush":
         backEnd.updateDrawMode("Brush");
@@ -62,10 +77,40 @@ public class Canvas implements View {
       case "DecreaseStroke":
         backEnd.decreaseStroke();
         break;
+      case "Red":
+        backEnd.updateCurrentColor(Color.RED);
+        break;
+      case "Blue":
+        backEnd.updateCurrentColor(Color.BLUE);
+        break;
+      case "Green":
+        backEnd.updateCurrentColor(Color.GREEN);
+        break;
+      case "Yellow":
+        backEnd.updateCurrentColor(Color.YELLOW);
+        break;
+      case "Black":
+        backEnd.updateCurrentColor(Color.BLACK);
+        break;
+      case "Magenta":
+        backEnd.updateCurrentColor(Color.MAGENTA);
+        break;
+      case "Cyan":
+        backEnd.updateCurrentColor(Color.CYAN);
+        break;
+      case "White":
+        backEnd.updateCurrentColor(Color.WHITE);
+        break;
       }
     }
   }
   
+  /**
+   * Private class that extends JPanel. This class is used to build the drawing area and add 
+   * MouseListener and MouseMotionListener Instances to the drawing panel.
+   * @author pv594
+   *
+   */
   private class DrawingAreaPanel extends JPanel{
     /**
      * 
@@ -80,15 +125,18 @@ public class Canvas implements View {
       this.addMouseListener(mouseHandlerInstance);
       this.addMouseMotionListener(mouseHandlerInstance);
     }
-    
+    /**
+     * Private class that implements MouseListener, MouseMotionListener to detect the motion of
+     * the mouse over the drawing area and also detect a press,drag and release of the mouse
+     * @author KillEmAll
+     *
+     */
     private class mouseHandler implements MouseListener, MouseMotionListener{
-
       @Override
       public void mousePressed(MouseEvent e) {
         mouseReleased = false;
         startPoint = e.getPoint();
         backEnd.updateCanvas();
-        System.out.println("Mouse pressed");
       }
 
       @Override
@@ -97,7 +145,6 @@ public class Canvas implements View {
         endPoint = e.getPoint();
         backEnd.addDrawingObject(startPoint,endPoint);
         backEnd.updateCanvas();
-        System.out.println("Mouse released");
       }
 
       @Override
@@ -105,7 +152,6 @@ public class Canvas implements View {
         endPoint = e.getPoint();
         backEnd.addTempDrawingObject(startPoint, endPoint);
         backEnd.updateCanvas();
-        System.out.println("Mouse dragged");
       }
       
       @Override
@@ -123,6 +169,10 @@ public class Canvas implements View {
       
     }
     
+    /**
+     * The paintComponent method that gets the temporary drawing object and all other drawing
+     * objects from its model and draws them on the drawing panel
+     */
     public void paintComponent(Graphics g) {
       Iterator<DrawingObject> drawingObjectIterator = backEnd.getDrawingObjectIterator();
       
@@ -145,7 +195,7 @@ public class Canvas implements View {
   //Constructor
   public Canvas(Model backEnd){
     this.backEnd = backEnd;
-    backEnd.registerListener(this);
+    createNewDrawing();
     startPoint = null;
     endPoint = null;
     
@@ -168,6 +218,7 @@ public class Canvas implements View {
     
     //initialise colorPanel
     colorPanel = new ColorPanel();
+    colorPanel.addActionListenerToButtons(new buttonClick());
     
     //setup east panel
     JPanel westPanel = new JPanel(new GridLayout(2,1));
@@ -184,21 +235,20 @@ public class Canvas implements View {
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
   }
   
+  /**
+   * Method to register the listener with its model when object is instantiated
+   */
   @Override
   public void createNewDrawing() {
     backEnd.registerListener(this);
   }
-
+  
+  /**
+   * Update the view with drawing object data from the model when asked to by the 
+   * model by using the repaint method of the drawing area
+   */
   @Override
   public void updateView() {
     drawingArea.repaint();
   }
-   
-  @Override
-  public Color getColor() {
-    return colorPanel.getCurrentColor();
-  }
-  
-  
-
 }
