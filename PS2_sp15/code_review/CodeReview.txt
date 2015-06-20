@@ -1,0 +1,21 @@
+Please enter your code review in this file as plain text
+and make sure to include it when you commit your project.
+
+Name.java:
+
+1)left the overriden checkIO method with default text from the IDE
+  “//TODO Auto-generated method stub”, and no documentation for the same
+
+2) Missed the if(!(o == this)) condition in the overriden equals function as instructed in Effective Java. Not only in this class but all the classes representing the fields of the address book.
+
+AddressBook.java:
+
+1) Entries should be searchable by field in the ‘searchEntries’ method, and the entire object should not be required while calling a search method. Seems impractical, since a client wants all the details would usually want to search using the value of a single field, and not the entire object.
+
+2) The method doesn’t seem good for scalability because of the switch case. For each new type of field in the address book a new case would have to be added with its own getter methods. For clarity/cleaner code there could’ve been a private method which can call the respective getter methods according to the field, and this method should’ve been used within ‘searchEntries’. This would also not clutter the public functions when more fields are added.
+
+3) Don’t understand why the compare method was overriden. Don’t see why someone would need this when the search function exists. And even if it is provided it should be able to compare other fields as well i.e object equality and not just name equality.
+
+Entry.java:
+
+1) Builder class implemented well.

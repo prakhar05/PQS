@@ -1,0 +1,22 @@
+Please enter your code review in this file as plain text
+and make sure to include it when you commit your project.
+
+1)class Stopwatch should’ve been written in a different class file and not in the same file as the StopwatchFactory.java file
+
+2)Synchronizing using StopwatchFactory.class is not correct in my opinion for two reasons. Firstly two different threads of two different instances cannot enter the locks simultaneously because when one thread enters its critical region, all the other instances of the class would be blocked(although we’re not going to be creating instances of this class, its not good practice to lock on the class). Secondly the lock is public and anyone else can lock on the StopwatchFactory.class which can be used to block all instances of the class. Ideally one should be using a private static final object and locking on that object.
+
+3)watchID does not need to be public since a Getter function has been written for the same. Not a good practice to make your member variables public unless absolutely needed, which is not the case here. And writing a getter function for a public member does not make too much sense.
+
+4)The watchID is set in the StopwatchFactory class but its a member of the Stopwatch class where it should be set. Going back to point number 3, this error is carried forward in the constructor when the ID is set to null, and then the ID member is set in the StopWatchFactory class, which seems like the incorrect thing to do.
+
+5)synchronizing on “this” in getID causes the same problems as point 2 with regards to safety. The object is public and can be locked in other parts of the program which can block the object from doing anything. 
+
+6)In the getId() function checking if the id null seems not useful because the id should not be allowed to be set as null, hence this check is not needed. It makes sense in case of this program where it is initialised as null in the constructor. But I think a stopwatch should not exist without an id. Hence again, this is related to points 3 and 4. The bottomline is that the cases of null ID and empty ID should not be checked in the getID function and these should be checked at the source when the ID is being set.
+
+7)In method start() startTime obtained using the System.currentTimeMillis whereas Effective java states that System.nanoTime should be used for the interval timing functions because it is more accurate and not affected by adjustments to the System’s real  time clock.
+
+8)There is no equals, toString and hashCode overwritten functions.
+
+9)The behaviour of the stopwatch has not been clearly documented, for the case of doing a start() after a stop(). Since it was discussed on the email chain and the professor asked the stop() to behave as a “pause” button, I think that could’ve been mentioned somewhere.
+
+

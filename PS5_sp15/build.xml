@@ -30,12 +30,17 @@
             </manifest>
         </jar>
     </target>
+    
+    <target name="junitjar">
+        <jar destfile="junit.jar" basedir="junit">
+        </jar>
+    </target>
 
     <target name="run" depends="jar">
         <java jar="build/jar/CanvasApp.jar" fork="true"/>
     </target>
     
-    <target name="compiletest" depends="jar">
+    <target name="compiletest" depends="jar,junitjar">
         <mkdir dir="build/testclasses"/>
         <javac includeantruntime="true" srcdir="${testsrc.dir}" destdir="${classes.dir}"/>
     </target>
